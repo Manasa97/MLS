@@ -1,5 +1,9 @@
-import itertools
-
+class Cell:
+	def __init__(self,letter,letterBonus,wordBonus):
+		self.letter=letter
+		self.letterBonus=letterBonus
+		self.wordBonus=wordBonus
+		
 class Tile:
 	def __init__(self,letter,score,count):
 		self.letter=letter
@@ -19,9 +23,8 @@ class Board:
 	#dir is 0 for right and 1 for down
 	#(0,0) is the top left corner of the board
 	def __init__(self):
-		initDict = {"letter":"0","letterBonus":1,"wordBonus":1}
-		listOfDict = list(itertools.repeat(initDict,15))
-		self.board=list(itertools.repeat(listOfDict,15))
+		self.board=[[Cell('-',1,1) for i in range(15)] for j in range(15)]
+		self.addBonuses()
 		self.initTiles()
 	
 	def initTiles(self):
@@ -36,15 +39,28 @@ class Board:
 					's':Tile('s',1,4),	't':Tile('t',1,6), 'u':Tile('u',1,4),	'v':Tile('v',4,2), 'w':Tile('w',4,2),	'x':Tile('x',8,1),
 					'y':Tile('y',4,2),	'z':Tile('z',10,1), '-':Tile('-',0,2)}
 
+	def addBonuses(self):
+		#key of dictionary bonuses: (letterBonus,wordBonus)
+		#(2,1)=> double letter score
+		bonuses={(2,1):[[0,3],[2,6],[3,0],[3,7],[6,2],[6,6],[7,3]],
+		(1,2):[[1,1],[2,2],[3,3],[4,4]],
+		(3,1):[[1,5],[5,1],[5,5]],
+		(1,3):[[0,0],[0,7],[7,0]]
+		}
+		for type in bonuses.keys():
+			for j in bonuses[type]:
+				obj=self.board[j[0]][j[1]]
+				obj.letterBonus=type[0]
+				obj.wordBonus=type[1]
+				
 	def computeScore(self,word, row, col, dir):#board, row no, col no, dir
 		sum = 0
 		bonusScore = 1
 		for i in word:
-			sum = sum + self.Tiles[i].score * self.board[row][col]["letterBonus"]
-			bonusScore = bonusScore * self.board[row][col]["wordBonus"]
+			sum = sum + self.Tiles[i].score * self.board[row][col].letterBonus
+			bonusScore = bonusScore * self.board[row][col].wordBonus
 			row = row + dir
-			col = col + (1 - dir)
-			
+			col = col + (1 - dir)			
 		sum = sum * bonusScore
 		return sum
 
