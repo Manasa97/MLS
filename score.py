@@ -21,11 +21,8 @@ def initBoard(bonus):
         for i in bonus[j]:
             type = j//2 + 1
             val = j % 2 + 2
-            print i,j,type,val
             board[i[0]][i[1]][type],board[14 - i[0]][i[1]][type],board[i[0]][14 - i[1]][type],board[14 - i[0]][14 - i[1]][type] = [val]*4
-    print board[1]
     return board
-    #*15 doesn't work
 
 def initBonus():
     dls = [[0,3],[2,6],[3,0],[3,7],[6,2],[6,6],[7,3]]
